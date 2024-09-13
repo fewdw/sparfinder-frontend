@@ -12,7 +12,6 @@ const CoachAccountInfo: React.FC = () => {
   const [profile, setProfile] = useState<CoachProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch profile data on component mount
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -36,16 +35,14 @@ const CoachAccountInfo: React.FC = () => {
     fetchProfile();
   }, []);
 
-  // Handle loading and error states
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   if (!profile) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
-  // Display the profile data once loaded
   return (
     <div>
       <h2>Coach Profile</h2>

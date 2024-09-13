@@ -1,4 +1,5 @@
 import { CREATE_COACH_PROFILE } from "@/utils/API_REQUESTS";
+import Link from "next/link";
 import { useState } from "react";
 
 const CreateAccountCoach = () => {
@@ -19,7 +20,7 @@ const CreateAccountCoach = () => {
 
       if (response.ok) {
         localStorage.setItem("accountType", "COACH");
-        setSuccess("Coach profile created. Refresh page to see changes.");
+        setSuccess("Coach profile created.");
       } else {
         const errorData = await response.json();
         console.error("Error data:", errorData);
@@ -33,12 +34,24 @@ const CreateAccountCoach = () => {
 
   return (
     <div className="flex justify-center m-4">
-      <div>
-        <button className="btn btn-primary" onClick={createCoachProfile}>
+      <div className="p-6 rounded-lg">
+        <button
+          className="btn btn-primary w-full mb-4"
+          onClick={createCoachProfile}
+        >
           Create Coach Profile
         </button>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-        {success && <p className="text-green-500 mt-2">{success}</p>}
+        {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+        {success && (
+          <div className="text-center">
+            <p className="text-success mt-2 text-lg font-semibold">{success}</p>
+            <Link href="/profile">
+              <button className="btn btn-success w-full mt-4">
+                View Profile
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

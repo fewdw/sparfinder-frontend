@@ -17,11 +17,7 @@ const ShowAccount = () => {
     return <BoxerAccountInfo />;
   }
 
-  return (
-    <div className="text-center mt-20 text-3xl mx-5">
-      Account Not Found... Please contact an admin
-    </div>
-  );
+  return <div></div>;
 };
 
 export default withAuth(ShowAccount);

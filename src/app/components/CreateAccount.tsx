@@ -12,8 +12,10 @@ const CreateAccount = () => {
   };
 
   return (
-    <div className="flex flex-col justify-start items-center h-screen mt-6">
-      <h1 className="text-2xl mb-4">Choose Your Account Type</h1>
+    <div className="flex flex-col justify-start items-center h-screen mt-10">
+      <h1 className="text-4xl mb-4 text-center mx-6">
+        First time User? Choose Your Account Type
+      </h1>
       <div className="w-full max-w-xs">
         <select
           className="select select-bordered w-full max-w-xs"
