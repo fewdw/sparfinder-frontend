@@ -1,3 +1,4 @@
+import { CREATE_COACH_PROFILE } from "@/utils/API_REQUESTS";
 import { useState } from "react";
 
 const CreateAccountCoach = () => {
@@ -8,16 +9,13 @@ const CreateAccountCoach = () => {
     setError(null);
     setSuccess(null);
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/user/profile/coach",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(CREATE_COACH_PROFILE, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         localStorage.setItem("accountType", "COACH");
