@@ -17,5 +17,11 @@ const config: Config = {
   plugins: [
     require('daisyui'),
   ],
+  daisyui: {
+    themes: [
+      "valentine",
+    
+    ],
+  },
 };
 export default config;

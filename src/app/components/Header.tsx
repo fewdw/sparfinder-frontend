@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { GOOGLE_LOGIN, GET_USER_INFO, LOGOUT } from "@/utils/API_REQUESTS";
 import Link from "next/link";
-import { getIsAuth, setIsAuth } from "@/utils/Auth";
+import { setIsAuth } from "@/utils/Auth";
 
 interface UserInfo {
   id: string;
@@ -31,6 +31,7 @@ const Header = () => {
         setIsLogged(true);
         setLoading(false);
         setIsAuth(true);
+        localStorage.setItem("accountType", data.accountType);
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);
@@ -46,12 +47,15 @@ const Header = () => {
 
   const handleLogout = () => {
     setIsAuth(false);
+    localStorage.setItem("accountType", "");
   };
 
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">SparFinder. 🥊</a>
+        <Link href={"/"} className="btn btn-ghost text-xl">
+          SparFinder. 🥊
+        </Link>
       </div>
       {isLogged && userInfo ? (
         <div className="flex-none gap-2">
@@ -71,11 +75,7 @@ const Header = () => {
             </li>
           </ul>
           <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
+            <div tabIndex={0} role="button" className="btn btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img alt="User profile picture" src={userInfo.profilePic} />
               </div>
@@ -100,7 +100,7 @@ const Header = () => {
       ) : (
         <div className="flex-none">
           <button
-            className="btn btn-error"
+            className="btn btn-primary"
             onClick={() => (window.location.href = GOOGLE_LOGIN)}
           >
             Login
