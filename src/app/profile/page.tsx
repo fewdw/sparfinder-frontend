@@ -1,22 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ProfileSeparator from "../components/ProfileSeparator";
-import CreateAccount from "../components/CreateAccount";
-import withAuth from "../components/WithAuth";
 import ShowAccount from "../components/ShowAccount";
 import { redirect } from "next/navigation";
 
 const page = () => {
-  const [storedValue, setStoredValue] = useState<string | null>(null);
-
   useEffect(() => {
     const value = localStorage.getItem("accountType");
-    setStoredValue(value);
+    const isAuth = localStorage.getItem("isAuth");
+    if (isAuth === "false") {
+      redirect("/");
+    }
+    if (value === "USER") {
+      redirect("/create-profile");
+    }
   }, []);
-
-  if (storedValue === "USER") {
-    redirect("/create-profile");
-  }
 
   return (
     <div>
@@ -26,4 +24,4 @@ const page = () => {
   );
 };
 
-export default withAuth(page);
+export default page;

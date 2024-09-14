@@ -41,10 +41,6 @@ const Header = () => {
       });
   }, []);
 
-  if (loading) {
-    return <div></div>;
-  }
-
   const handleLogout = () => {
     setIsAuth(false);
     localStorage.setItem("accountType", "");

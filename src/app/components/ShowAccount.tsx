@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
-import withAuth from "./WithAuth";
 import CoachAccountInfo from "./CoachAccountInfo";
 import BoxerAccountInfo from "./BoxerAccountInfo";
+import { redirect } from "next/navigation";
 
 const ShowAccount = () => {
   const [accountType, setAccountType] = useState("");
 
   useEffect(() => {
     const storedAccountType = localStorage.getItem("accountType") || "";
+    const isAuth = localStorage.getItem("isAuth");
+
+    if (isAuth === "false") {
+      redirect("/");
+    }
+
     setAccountType(storedAccountType);
   }, []);
 
@@ -20,4 +26,4 @@ const ShowAccount = () => {
   return <div></div>;
 };
 
-export default withAuth(ShowAccount);
+export default ShowAccount;
