@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ProfileSeparator from "../components/ProfileSeparator";
 import { redirect } from "next/navigation";
+import CreateGymForm from "../components/CreateGymForm";
 
 const page = () => {
   useEffect(() => {
@@ -46,7 +47,7 @@ const page = () => {
 
           {selectedOption === "associate" && <div>1</div>}
 
-          {selectedOption === "add" && <div>2</div>}
+          {selectedOption === "add" && <CreateGymForm></CreateGymForm>}
         </div>
       </div>
     </div>

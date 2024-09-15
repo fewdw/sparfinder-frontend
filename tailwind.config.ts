@@ -19,7 +19,7 @@ const config: Config = {
   ],
   daisyui: {
     themes: [
-      "valentine",
+      "retro",
     
     ],
   },
