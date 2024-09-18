@@ -1,3 +1,4 @@
+"use client";
 import { CREATE_NEW_GYM } from "@/utils/API_REQUESTS";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,22 +27,6 @@ const CreateGymForm: React.FC = () => {
     } else {
       setFile(null);
     }
-  };
-
-  // Function to convert file to Base64 string
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        // Remove the data URL prefix to get pure Base64 string
-        resolve(base64data.split(",")[1]);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(file);
-    });
   };
 
   // Handle form submission
@@ -91,34 +76,21 @@ const CreateGymForm: React.FC = () => {
       setErrors({});
     }
 
-    // Convert image file to Base64 string
-    let profilePicBase64 = "";
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("name", name.trim());
+    formData.append("rules", rules.trim());
+    formData.append("location", address.trim());
+    formData.append("country", country.trim());
     if (file) {
-      try {
-        profilePicBase64 = await fileToBase64(file);
-      } catch (error) {
-        console.error("Error converting file to Base64:", error);
-        return;
-      }
+      formData.append("profilePic", file);
     }
-
-    // Create data object
-    const data = {
-      name: name.trim(),
-      profile_pic: profilePicBase64,
-      rules: rules.trim(),
-      location: address.trim(),
-      country: country.trim(),
-    };
 
     // Send POST request
     try {
       const response = await fetch(CREATE_NEW_GYM, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: formData,
         credentials: "include",
       });
 
@@ -137,7 +109,6 @@ const CreateGymForm: React.FC = () => {
 
   return (
     <>
-      {submitError && <p className="text-red-500">{submitError}</p>}
       <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
         {/* Name */}
         <div>
@@ -268,6 +239,9 @@ const CreateGymForm: React.FC = () => {
         <button type="submit" className="btn btn-active btn-primary">
           Submit
         </button>
+        {submitError && (
+          <p className="text-red-500 text-center mt-4">{submitError}</p>
+        )}
       </form>
     </>
   );
