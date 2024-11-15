@@ -17,12 +17,87 @@ const CreateGymForm: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitError, setSubmitError] = useState("");
 
+  // Compress Image Function
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+
+          // Reduce the size of the image by scaling dimensions
+          const scaleFactor = Math.sqrt(0.3); // Approximately 0.5477
+          const width = img.width * scaleFactor;
+          const height = img.height * scaleFactor;
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: "image/jpeg",
+                    lastModified: Date.now(),
+                  });
+                  resolve(compressedFile);
+                } else {
+                  reject(new Error("Compression failed"));
+                }
+              },
+              "image/jpeg",
+              0.7 // Compression quality (0 to 1)
+            );
+          } else {
+            reject(new Error("Canvas not supported"));
+          }
+        };
+
+        img.onerror = (err) => {
+          reject(err);
+        };
+      };
+
+      reader.onerror = (err) => {
+        reject(err);
+      };
+    });
+  };
+
   // Handle file input change
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      if (errors.file) {
-        setErrors((prev) => ({ ...prev, file: "" }));
+      const selectedFile = e.target.files[0];
+
+      try {
+        // Compress the image
+        const compressedFile = await compressImage(selectedFile);
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+        if (compressedFile.size > maxSize) {
+          setErrors((prev) => ({
+            ...prev,
+            file: "File size must be under 5MB after compression",
+          }));
+          setFile(null);
+        } else {
+          setFile(compressedFile);
+          if (errors.file) {
+            setErrors((prev) => ({ ...prev, file: "" }));
+          }
+        }
+      } catch (error) {
+        console.error("Image compression error:", error);
+        setErrors((prev) => ({ ...prev, file: "Failed to compress image" }));
+        setFile(null);
       }
     } else {
       setFile(null);

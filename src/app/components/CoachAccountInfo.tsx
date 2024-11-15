@@ -12,6 +12,7 @@ const CoachAccountInfo: React.FC = () => {
   const [profile, setProfile] = useState<CoachProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
+  const [gymName, setGymName] = useState<string>("currently no gym");
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +36,24 @@ const CoachAccountInfo: React.FC = () => {
       }
     };
 
+    const fetchGymName = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/gym/name", {
+          credentials: "include",
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setGymName(data.gymName || "currently no gym"); // Set gymName or default if not found
+      } catch (err) {
+        console.error("Failed to fetch gym name:", err);
+        setGymName("currently no gym");
+      }
+    };
+
     fetchProfile();
+    fetchGymName();
   }, []);
 
   const handleUpdateName = async () => {
@@ -66,6 +84,14 @@ const CoachAccountInfo: React.FC = () => {
     } catch (err) {
       // Display error message below 'Member Since'
       setUpdateError("Please make sure name is 5-50 characters.");
+    }
+  };
+
+  const handleGymButtonClick = () => {
+    if (gymName !== "currently no gym") {
+      window.location.href = "/gym"; // Navigate to the "View Gym" page
+    } else {
+      window.location.href = "/gym"; // Navigate to the "Create Gym" page
     }
   };
 
@@ -116,7 +142,7 @@ const CoachAccountInfo: React.FC = () => {
         </label>
 
         {/* Created At Input (Displaying Date) */}
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered flex items-center gap-2 mb-4">
           Member Since
           <input
             type="text"
@@ -125,6 +151,27 @@ const CoachAccountInfo: React.FC = () => {
             readOnly
           />
         </label>
+
+        {/* Gym Input with Button */}
+        <div className="flex gap-2 mb-4">
+          <label className="input input-bordered flex items-center gap-2 grow">
+            Gym
+            <input
+              type="text"
+              className="grow cursor-not-allowed font-extrabold"
+              value={gymName}
+              readOnly
+            />
+          </label>
+          <button
+            className={`btn ${
+              gymName !== "currently no gym" ? "btn-secondary" : "btn-primary"
+            }`}
+            onClick={handleGymButtonClick}
+          >
+            {gymName !== "currently no gym" ? "View Gym" : "Create Gym"}
+          </button>
+        </div>
 
         {/* Display Update Error Below Member Since */}
         {updateError && <div className="text-red-500 mt-2">{updateError}</div>}
