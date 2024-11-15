@@ -26,8 +26,6 @@ const CreateOrAssociateGym = () => {
 
   return (
     <div>
-      <ProfileSeparator selectedTab={1} />
-
       <div className="flex flex-col justify-start items-center h-screen mt-10">
         <h1 className="text-4xl mb-4 text-center mx-6">
           Create or associate to a gym.
